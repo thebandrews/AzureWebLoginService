@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "LoginService", "LoginService\LoginService.ccproj", "{B2F62CDE-42C1-4A19-9EBA-532D5FF04FB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerRole1", "WorkerRole1\WorkerRole1.csproj", "{F2BEFCBA-0011-4A8A-8654-7EE150753268}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2F62CDE-42C1-4A19-9EBA-532D5FF04FB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2F62CDE-42C1-4A19-9EBA-532D5FF04FB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2F62CDE-42C1-4A19-9EBA-532D5FF04FB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2F62CDE-42C1-4A19-9EBA-532D5FF04FB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2BEFCBA-0011-4A8A-8654-7EE150753268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2BEFCBA-0011-4A8A-8654-7EE150753268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2BEFCBA-0011-4A8A-8654-7EE150753268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2BEFCBA-0011-4A8A-8654-7EE150753268}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
