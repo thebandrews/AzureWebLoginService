@@ -11,7 +11,9 @@ using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.StorageClient;
 using Microsoft.WindowsAzure.Diagnostics.Management;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.IO;
+using HtmlAgilityPack;
 
 namespace WorkerRole1
 {
@@ -36,6 +38,22 @@ namespace WorkerRole1
         /// Temp - storing cookies until I have a db setup
         /// </summary>
         private CookieCollection m_cookies;
+
+        /// <summary>
+        /// Temp - storing league id until db setup
+        /// </summary>
+        private int m_leagueId;
+
+        /// <summary>
+        /// Temp - storing team id until db setup
+        /// </summary>
+        private int m_teamId;
+
+        /// <summary>
+        /// Temp - storing year until db setup
+        /// </summary>
+        private int m_season;
+
 
         //
         // This appears to be the money shot POST which will log a user into espn:
@@ -144,8 +162,7 @@ namespace WorkerRole1
 
 
                 //
-                // Do something with the response stream. As an example, we'll 
-                // stream the response to the console via a 256 character buffer 
+                // Read the response stream to determine if login was successful.
                 //
                 using (StreamReader reader = new StreamReader(resp.GetResponseStream()))
                 {
@@ -203,8 +220,7 @@ namespace WorkerRole1
             // Read the response
             //            
             using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
-            {
-                string respString = "";
+            {                
 
                 //
                 // Do something with the response stream. As an example, we'll 
@@ -212,18 +228,46 @@ namespace WorkerRole1
                 //
                 using (StreamReader reader = new StreamReader(resp.GetResponseStream()))
                 {
-                    Char[] buffer = new Char[256];
-                    int count = reader.Read(buffer, 0, 256);
-                    while (count > 0)
+                    HtmlDocument doc = new HtmlDocument();
+                    doc.Load(reader);
+
+                    //
+                    // Build regEx for extracting legue info from link address
+                    //
+                    string pattern = @"(clubhouse\?leagueId=)(\d+)(&teamId=)(\d+)(&seasonId=)(\d+)";
+                    Regex rgx = new Regex(pattern, RegexOptions.IgnoreCase);
+
+                    foreach(HtmlNode hNode in doc.DocumentNode.SelectNodes("//a[@href]"))
                     {
-                        respString += new String(buffer, 0, count);
-                        count = reader.Read(buffer, 0, 256);
-                    }
+                        
+                        HtmlAttribute att = hNode.Attributes["href"];
+                        Match match = rgx.Match(att.Value);                       
+
+                        //
+                        // If our regEx finds a match then we have leagueId, teamId, and seasonId
+                        //
+                        if(match.Success){
+                            //writeLog("NODE> Name: " + hNode.Name + ", ID: " + hNode.Id + "attr: " + att.Value);
+
+                            GroupCollection groups = match.Groups;
+
+                            m_leagueId = Convert.ToInt32(groups[2].Value);
+                            m_teamId = Convert.ToInt32(groups[4].Value);
+                            m_season = Convert.ToInt32(groups[6].Value);
+
+                            //
+                            // TODO: We should be able to support multiple teams per season -
+                            // this is more of a db issue than anything...
+                            //
+                            writeLog("league id : " + m_leagueId + ", team id: " + m_teamId + ", year: " + m_season);                            
+                        }
+                        
+                    }                    
 
                 } // reader is disposed here
 
                 //writeLog("----------------------------------");
-                writeLog(respString);
+                //writeLog(respString);
             }
         }
 
